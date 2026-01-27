@@ -24,7 +24,7 @@ export default function Hero() {
       <div
         className="absolute inset-0 bg-cover bg-center md:hidden"
         style={{
-          backgroundImage: "url('/aircraft_images/rmafA400m.jpeg')",
+          backgroundImage: "url('/aircraft_images/RMAFA4m.png')",
           filter: "brightness(1.1)",
         }}
       />

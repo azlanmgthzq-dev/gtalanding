@@ -34,11 +34,11 @@ export default function TopNav() {
           {/* LOGO */}
           <Link href="/" className="flex items-center gap-3">
             <Image
-              src="/Logo/GTAFullLogo.png"
+              src="/Logo/OFLogo3.png"
               alt="Global Turbine Asia"
               width={220}
               height={60}
-              className="h-12 w-auto transition-opacity sm:h-14"
+              className="h-12 w-auto transition-opacity sm:h-10"
               priority
             />
             <span className="sr-only">Global Turbine Asia</span>
