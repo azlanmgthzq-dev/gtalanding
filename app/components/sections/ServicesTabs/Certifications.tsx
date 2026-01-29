@@ -11,9 +11,9 @@ type Cert = {
 };
 
 const CERTS: Cert[] = [
-  { id: "easa", title: "EASA Part-145 Approval", image: "/Cert_images/easa.png" },
-  { id: "dgta", title: "DGTA Approved Maintenance Organization", image: "/Cert_images/dGTA.png" },
-  { id: "gapprove", title: "DGTA Approved Maintenance Organization [page 2]", image: "/Cert_images/gApprove.png" },
+  { id: "easa", title: "EASA Part-145 Approval", image: "/cert_images/easa.png" },
+  { id: "dgta", title: "DGTA Approved Maintenance Organization", image: "/cert_images/dGTA.png" },
+  { id: "gapprove", title: "DGTA Approved Maintenance Organization [page 2]", image: "/cert_images/gApprove.png" },
 ];
 
 export default function Certifications() {
