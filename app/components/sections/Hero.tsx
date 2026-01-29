@@ -13,14 +13,12 @@ export default function Hero() {
         playsInline
         preload="metadata"
         className="absolute inset-0 hidden h-full w-full object-cover md:block animate-gradient-drift"
-        style={{
-          filter: "brightness(1.1)",
-        }}
+        style={{ filter: "brightness(1.1)" }}
       >
         <source src="/videos/BgVid.mp4" type="video/mp4" />
       </video>
 
-      {/* Fallback image (mobile & backup) */}
+      {/* Fallback image (mobile) */}
       <div
         className="absolute inset-0 bg-cover bg-center md:hidden"
         style={{
@@ -29,179 +27,76 @@ export default function Hero() {
         }}
       />
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,18,32,0.80),rgba(11,18,32,0.70))]" />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,18,32,0.78),rgba(11,18,32,0.70))]" />
 
       {/* Grid texture */}
-      <div className="pointer-events-none absolute inset-0 bg-grid opacity-15" />
+      <div className="pointer-events-none absolute inset-0 bg-grid opacity-10" />
 
-      {/* Accent glows */}
-      <div className="pointer-events-none absolute -left-16 top-16 h-56 w-56 rounded-full bg-accent-500/15 blur-[80px]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-accent-400/12 blur-[96px]" />
+      {/* Accent glow (keep very subtle) */}
+      <div className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-accent-500/12 blur-[120px]" />
 
       {/* Content */}
       <div
         className="
-          relative mx-auto max-w-[1280px] px-6
-          pt-24 pb-20
-          sm:pt-28 sm:pb-24
-          lg:pt-30 lg:pb-28
+          relative mx-auto max-w-[1100px] px-6
+          pt-32 pb-24
+          sm:pt-36
+          lg:pt-44
         "
       >
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-          {/* LEFT – Main message */}
-          <div className="lg:col-span-6 animate-hero-fade">
-            {/* Eyebrow */}
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-400)]">
-              Malaysian-owned • Defense-grade MRO
-            </p>
+        <div className="animate-hero-fade max-w-3xl">
+          {/* Eyebrow */}
+          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-400)]">
+            Malaysian-owned • Defense-grade MRO
+          </p>
 
-            {/* Headline (FIXED responsive wrap) */}
-            <h1
+          {/* Headline */}
+          <h1 className="text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+            Global Turbine Asia
+          </h1>
+
+          {/* Subheadline */}
+          <p className="mt-6 text-base leading-relaxed text-white/80 sm:text-lg">
+            <strong className="text-white">GTA</strong> is an
+            independent engine maintenance, repair and overhaul service provider
+            supporting mission-critical military and civil fleets across the
+            Asia-Pacific region.
+          </p>
+
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/65 sm:text-base">
+            A Malaysian-born joint venture with{" "}
+            <strong className="text-white">
+              Safran Helicopter Engines
+            </strong>
+            , built on technical capability, disciplined governance, and
+            long-term partnership.
+          </p>
+
+          {/* CTAs */}
+          <div className="mt-12 flex flex-wrap items-center gap-4">
+            <Link
+              href="#services"
               className="
-                text-4xl font-semibold leading-tight text-white
-                sm:text-4xl
-                lg:text-4xl
+                rounded-md bg-[var(--color-accent-500)]
+                px-7 py-3 text-sm font-semibold text-white
+                shadow-[var(--shadow-card)]
+                hover:opacity-90 transition
               "
             >
-              We are{" "}
-              <span className="block sm:inline">
-                Global Turbine Asia.
-              </span>
-            </h1>
+              View Capabilities
+            </Link>
 
-            {/* Description */}
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--color-ink-muted)] sm:text-lg">
-              <strong className="text-white">GLOBAL TURBINE ASIA</strong> is an
-              independent engine maintenance, repair and overhaul service
-              provider supporting military and civil fleets across the Asia
-              Pacific region.
-              <br />
-              <br />
-              A Malaysian-born joint venture with <strong className="text-white">Safran Helicopter Engines</strong>, we
-              represent true technical capability, disciplined governance, and
-              long-term partnership—growing from a local industrial footprint
-              into a regional aerospace authority.
-            </p>
-
-            {/* CTAs */}
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link
-                href="#services"
-                className="
-                  rounded-md bg-[var(--color-accent-500)]
-                  px-6 py-3 text-sm font-semibold text-white
-                  shadow-[var(--shadow-card)]
-                  hover:opacity-90 transition
-                "
-              >
-                View Capability List
-              </Link>
-
-              <Link
-                href="#partners"
-                className="
-                  rounded-md border border-white/20
-                  px-6 py-3 text-sm font-medium text-white
-                  hover:bg-white/5 transition
-                "
-              >
-                Strategic Partnerships
-              </Link>
-            </div>
-          </div>
-
-          {/* RIGHT – Certification rail */}
-          <div
-            className="
-              md:col-span-12 lg:col-span-5
-              animate-hero-fade-delay
-            "
-          >
-            {/* Mobile: Collapsible panel */}
-            <details className="md:hidden mt-10">
-              <summary
-                className="
-                  cursor-pointer rounded-md border border-white/15
-                  bg-white/5 px-4 py-3 text-sm font-semibold text-white
-                  backdrop-blur-sm
-                  hover:bg-white/8 transition-colors
-                "
-              >
-                Certifications & Authorizations
-              </summary>
-
-              <div
-                className="
-                  mt-4 rounded-lg border border-white/10
-                  bg-white/5 p-5 backdrop-blur-sm
-                "
-              >
-                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/70">
-                  Certified & Authorized
-                </p>
-
-                <ul className="space-y-3 text-sm text-white/85">
-                  <li>EASA Part-145 (TP400-D6)</li>
-                  <li>CAAM & DGTA Approved</li>
-                  <li>AS / EN 9110 Quality System</li>
-                </ul>
-
-                <div className="my-6 h-px bg-white/10" />
-
-                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/70">
-                  OEM & Partners
-                </p>
-
-                <ul className="space-y-3 text-sm text-white/85">
-                  <li>Safran Certified Maintenance Centre</li>
-                  <li>Europrop International (TP400 AMO)</li>
-                  <li>Licensed Engineering – Safran eAPU60</li>
-                </ul>
-
-                <div className="mt-6 text-xs text-white/50">
-                  Military & Civil Fleets • Asia-Pacific
-                </div>
-              </div>
-            </details>
-
-            {/* Desktop: Always visible card */}
-            <div className="hidden md:block">
-              <div
-                className="
-                  rounded-lg border border-white/10
-                  bg-white/5 p-6 backdrop-blur-sm
-                  transition-colors duration-300
-                  hover:border-white/20 hover:bg-white/8
-                "
-              >
-                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/70">
-                  Certified & Authorized
-                </p>
-
-                <ul className="space-y-3 text-sm text-white/85">
-                  <li>EASA Part-145 (TP400-D6)</li>
-                  <li>CAAM & DGTA Approved</li>
-                  <li>AS / EN 9110 Quality System</li>
-                </ul>
-
-                <div className="my-6 h-px bg-white/10" />
-
-                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/70">
-                  OEM & Partners
-                </p>
-
-                <ul className="space-y-3 text-sm text-white/85">
-                  <li>Safran Certified Maintenance Centre</li>
-                  <li>Europrop International (TP400 AMO)</li>
-                  <li>Licensed Engineering – Safran eAPU60</li>
-                </ul>
-
-                <div className="mt-6 text-xs text-white/50">
-                  Military & Civil Fleets • Asia-Pacific
-                </div>
-              </div>
-            </div>
+            <Link
+              href="#about"
+              className="
+                rounded-md border border-white/20
+                px-7 py-3 text-sm font-medium text-white
+                hover:bg-white/5 transition
+              "
+            >
+              About GTA
+            </Link>
           </div>
         </div>
       </div>

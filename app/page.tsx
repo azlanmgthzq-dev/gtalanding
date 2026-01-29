@@ -1,12 +1,13 @@
-import Capabilities from "./components/sections/Capabilities";
+import Capabilities from "./components/sections/ServicesTabs/Capabilities";
 import Hero from "./components/sections/Hero";
+import ServicesTabs from "./components/sections/ServicesTabs";
 
 export default function Home() {
   return (
     <main className="relative">
       {/* HERO */}
       <Hero />
-      <Capabilities />
+      <ServicesTabs />
 
       {/* ============================== */}
       {/* STATS / READINESS STRIP (NEXT) */}
