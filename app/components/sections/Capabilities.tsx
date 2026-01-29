@@ -1,10 +1,18 @@
 export default function Capabilities() {
     return (
-      <section
+        <section
         id="services"
-        className="relative bg-[var(--color-navy-900)] py-20 sm:py-24"
+        className="relative overflow-hidden bg-[var(--color-navy-900)] py-20 sm:py-24"
+        style={{
+          backgroundImage: "url('/services_images/CapBg.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
-        <div className="mx-auto max-w-[1280px] px-6">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,18,32,0.55),rgba(11,18,32,0.70))]" />
+        <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.06]" />
+
+        <div className="relative z-10 mx-auto max-w-[1280px] px-6">
           {/* Section header */}
           <div className="mb-14 max-w-3xl animate-hero-fade">
             <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-400)]">
@@ -13,7 +21,7 @@ export default function Capabilities() {
             <h2 className="text-3xl font-semibold text-white sm:text-4xl">
               Core MRO Services & Support Programs
             </h2>
-            <p className="mt-5 text-base leading-relaxed text-[var(--color-ink-muted)] sm:text-lg">
+            <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg">
               Comprehensive maintenance, repair, overhaul, and long-term support
               services designed to sustain mission-critical military, civil, and
               parapublic fleets across the Asia-Pacific region.
@@ -23,7 +31,7 @@ export default function Capabilities() {
           {/* Capability cards */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Card 1 */}
-            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-colors hover:border-white/20">
+            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:border-white/20">
               <h3 className="mb-3 text-lg font-semibold text-white">
                 Engine Maintenance & Overhaul
               </h3>
@@ -46,7 +54,7 @@ export default function Capabilities() {
             </div>
   
             {/* Card 2 */}
-            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-colors hover:border-white/20">
+            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:border-white/20">
               <h3 className="mb-3 text-lg font-semibold text-white">
                 TP400-D6 Turboprop Support
               </h3>
@@ -69,7 +77,7 @@ export default function Capabilities() {
             </div>
   
             {/* Card 3 */}
-            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-colors hover:border-white/20">
+            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:border-white/20">
               <h3 className="mb-3 text-lg font-semibold text-white">
                 Auxiliary Power Unit (APU) Services
               </h3>
@@ -89,12 +97,12 @@ export default function Capabilities() {
             </div>
   
             {/* Card 4 */}
-            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-colors hover:border-white/20">
+            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:border-white/20">
               <h3 className="mb-3 text-lg font-semibold text-white">
                 Support-By-Hour (SBH®)
               </h3>
               <p className="mb-5 text-sm leading-relaxed text-white/75">
-                Predictable “pay-as-you-fly” programs offering fixed cost per
+                Predictable "pay-as-you-fly" programs offering fixed cost per
                 engine flight hour, reducing unexpected maintenance expenses for
                 civil and parapublic operators.
               </p>
@@ -109,7 +117,7 @@ export default function Capabilities() {
             </div>
   
             {/* Card 5 */}
-            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-colors hover:border-white/20">
+            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:border-white/20">
               <h3 className="mb-3 text-lg font-semibold text-white">
                 Global Support Package (GSP®)
               </h3>
@@ -129,7 +137,7 @@ export default function Capabilities() {
             </div>
   
             {/* Card 6 */}
-            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-colors hover:border-white/20">
+            <div className="animate-hero-fade rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:border-white/20">
                  <h3 className="mb-3 text-lg font-semibold text-white">
                     Logistics, Standard Exchange & Training
                  </h3>
@@ -153,4 +161,3 @@ export default function Capabilities() {
       </section>
     );
   }
-  
