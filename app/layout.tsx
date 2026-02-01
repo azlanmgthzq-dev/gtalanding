@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Barlow, Space_Mono } from "next/font/google";
 import "./globals.css";
 import TopNav from "./components/navigation/TopNav";
-import Hero from "./components/sections/Hero";
+import FloatingChat from "./components/chat/FloatingChat";
 
 const barlow = Barlow({
   variable: "--font-barlow",
@@ -35,6 +35,9 @@ export default function RootLayout({
         <TopNav />
 
         {children}
+
+        {/* Floating Chat - ChatTrigger at bottom, opens ChatBox */}
+        <FloatingChat />
       </body>
     </html>
   );
