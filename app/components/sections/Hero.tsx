@@ -39,70 +39,40 @@ export default function Hero() {
       {/* Content */}
       <div
         className="
-          relative mx-auto max-w-[1100px] px-6
-          pt-32 pb-24
-          sm:pt-36
-          lg:pt-44
+          relative mx-auto flex min-h-screen max-w-[1100px] px-6
+          items-end
+          pb-24
+          sm:pb-28
+          lg:pb-32
         "
       >
-        <div className="animate-hero-fade max-w-3xl">
-          {/* Eyebrow */}
-          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-400)]">
-            Malaysian-owned • Defense-grade MRO
+        <div className="animate-hero-fade space-y-3 text-left">
+          {/* Sub headline */}
+          <p className="text-sm uppercase tracking-[0.35em] text-white/70 sm:text-base">
+            Global Turbine Asia  
           </p>
 
-          {/* Headline */}
-          <h1 className="text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-            Global Turbine Asia
+          {/* Main headline */}
+          <h1
+            className="
+              font-semibold tracking-tight text-white
+              text-5xl leading-tight
+              sm:text-6xl
+              lg:text-7xl
+            "
+            style={{
+              fontFamily:
+                "var(--font-display, 'DM Serif Display', 'Cormorant Garamond', 'Playfair Display', serif)",
+            }}
+          >
+            We Keep You Flying .
           </h1>
-
-          {/* Subheadline */}
-          <p className="mt-6 text-base leading-relaxed text-white/80 sm:text-lg">
-            <strong className="text-white">GTA</strong> is an
-            independent engine maintenance, repair and overhaul service provider
-            supporting mission-critical military and civil fleets across the
-            Asia-Pacific region.
-          </p>
-
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/65 sm:text-base">
-            A Malaysian-born joint venture with{" "}
-            <strong className="text-white">
-              Safran Helicopter Engines
-            </strong>
-            , built on technical capability, disciplined governance, and
-            long-term partnership.
-          </p>
-
-          {/* CTAs */}
-          <div className="mt-12 flex flex-wrap items-center gap-4">
-            <Link
-              href="#services"
-              className="
-                rounded-md bg-[var(--color-accent-500)]
-                px-7 py-3 text-sm font-semibold text-white
-                shadow-[var(--shadow-card)]
-                hover:opacity-90 transition
-              "
-            >
-              View Capabilities
-            </Link>
-
-            <Link
-              href="#about"
-              className="
-                rounded-md border border-white/20
-                px-7 py-3 text-sm font-medium text-white
-                hover:bg-white/5 transition
-              "
-            >
-              About GTA
-            </Link>
-          </div>
         </div>
       </div>
 
+
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-widest text-white/60 animate-float-indicator">
+      <div className="absolute bottom-8 start-1/2 -translate-x-1/2 text-xs uppercase tracking-widest text-white/60 animate-float-indicator">
         Scroll
       </div>
     </section>

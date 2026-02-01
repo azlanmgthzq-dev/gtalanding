@@ -6,9 +6,9 @@ import Certifications from "./Certifications";
 import KeyPrograms from "./KeyPrograms";
 
 const TABS = [
-  { id: "capabilities", label: "Capabilities" },
-  { id: "certifications", label: "Certifications" },
-  { id: "programs", label: "Customers" },
+  { id: "capabilities", label: "Engine Capabilities" },
+  { id: "certifications", label: "Certifications & Homologations" },
+  { id: "programs", label: "Beyond Engine Maintenance" },
 ];
 
 export default function ServicesTabs() {
@@ -16,33 +16,41 @@ export default function ServicesTabs() {
 
   return (
     <section
-      className="relative overflow-hidden py-24"
-      style={{
-        backgroundImage:
-          "linear-gradient(180deg, rgba(11,18,32,0.7), rgba(11,18,32,0.75)), url('/services_images/dato.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="pointer-events-none absolute inset-0 bg-grid opacity-10" />
-      <div className="relative mx-auto max-w-[1280px] px-6">
+        className="relative overflow-hidden py-24"
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              180deg,
+              rgba(11,18,32,0.92),
+              rgba(11,18,32,0.88)
+            ),
+            url('/services_images/CapBg.png')
+          `,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
 
+      {/* Optional subtle grid */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03),transparent_70%)]" />
+
+
+      <div className="relative mx-auto max-w-[1280px] px-6">
         {/* Section Header */}
         <div className="mb-12 max-w-3xl">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-400)]">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-400)]">
             Capabilities & Credentials
-        </p>
+          </p>
 
-        <h2 className="text-3xl font-semibold text-white sm:text-4xl">
+          <h2 className="text-3xl font-semibold text-white sm:text-4xl">
             GTA CAPABILITIES & CREDENTIALS
-        </h2>
+          </h2>
 
-        <p className="mt-5 text-base leading-relaxed text-white/75 sm:text-lg">
+          <p className="mt-5 text-base leading-relaxed text-white/75 sm:text-lg">
             Our technical services, certified approvals, and flagship programs
             supporting military, civil, and parapublic operations.
-        </p>
+          </p>
         </div>
-
 
         {/* Tabs */}
         <div className="mb-14 flex gap-4 rounded-xl border border-white/10 bg-white/5 p-2 backdrop-blur">

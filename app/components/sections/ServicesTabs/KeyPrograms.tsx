@@ -3,177 +3,128 @@
 import Image from "next/image";
 import { useState } from "react";
 
-type Customer = {
-    id: string;
-    name: string;
-    logo: string;
-    description: string;
-    engines: {
-      name: string;
-      image: string;
-    }[];
-  };
+type SupportService = {
+  id: string;
+  title: string;
+  description: string;
+  highlights: string[];
+};
+
   
-const CUSTOMERS: Customer[] = [
+const SUPPORT_SERVICES: SupportService[] = [
   {
-    id: "rmaf",
-    name: "Royal Malaysian Air Force",
-    logo: "/customers_logos/RMAF.png",
+    id: "aog",
+    title: "AOG & 24/7 Operational Support",
     description:
-      "Supporting fixed-wing and rotary assets through long-term engine maintenance, availability programs, and AOG readiness.",
-    engines: [
-      { name: "TP400-D6", image: "/engine_images/TP-400.png" },
-      { name: "Makila", image: "/engine_images/Makila.png" },
+      "Round-the-clock technical and logistical support to restore aircraft availability during Aircraft On Ground (AOG) situations.",
+    highlights: [
+      "24/7 technical helpline",
+      "Privileged channels with Safran Helicopter Engines",
+      "Rapid logistics coordination",
     ],
   },
   {
-    id: "navy",
-    name: "Royal Malaysian Navy",
-    logo: "/customers_logos/Navy.png",
+    id: "spares",
+    title: "Spare Parts & Tooling Distribution",
     description:
-      "Providing rotary wing engine support and availability programs for naval aviation operations.",
-    engines: [
-      { name: "Arriel", image: "/engine_images/Arriel.png" },
+      "Sole distributor in Malaysia for Safran helicopter engine spare parts and specialised tooling.",
+    highlights: [
+      "OEM-approved parts",
+      "Specialised engine tooling",
+      "Local availability & reduced lead time",
     ],
   },
   {
-    id: "police",
-    name: "Malaysian Army Aviation",
-    logo: "/customers_logos/Police.png",
+    id: "field",
+    title: "Technical Assistance & Field Service",
     description:
-      "Supporting helicopter fleets with reliable engine maintenance and rapid exchange support.",
-    engines: [
-      { name: "Arrius", image: "/engine_images/Arrius.png" },
+      "On-site technical support and troubleshooting by qualified field representatives and technicians.",
+    highlights: [
+      "On-site deployment",
+      "Operational troubleshooting",
+      "Daily maintenance support",
+    ],
+  },
+  {
+    id: "training",
+    title: "Training Services",
+    description:
+      "Structured training programmes to transfer GTA’s technical knowledge and operational experience to customer personnel.",
+    highlights: [
+      "Maintenance training",
+      "Operational best practices",
+      "Capability development",
+    ],
+  },
+  {
+    id: "ehm",
+    title: "Engine Health Monitoring (EHM)",
+    description:
+      "Predictive monitoring of engine parameters to support proactive maintenance decisions and fleet reliability.",
+    highlights: [
+      "Torque & temperature margin tracking",
+      "Predictive maintenance insights",
+      "Lifecycle optimisation",
+    ],
+  },
+  {
+    id: "contracts",
+    title: "Operational Support Contracts",
+    description:
+      "Long-term support solutions providing cost predictability and assured engine availability.",
+    highlights: [
+      "Support By The Hour (SBH®)",
+      "Global Support Package (GSP®)",
+      "Budget and availability assurance",
     ],
   },
 ];
 
-export default function Customers() {
-  const [active, setActive] = useState(CUSTOMERS[0]);
-  const [openId, setOpenId] = useState<string | null>(null);
+
+export default function BeyondEngineMaintenance() {
+  const [active, setActive] = useState(SUPPORT_SERVICES[0]);
 
   return (
-    <div className="relative">
-      <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
+    <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr]">
+      {/* Service list */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {SUPPORT_SERVICES.map((service) => (
+          <button
+            key={service.id}
+            onClick={() => setActive(service)}
+            className={`rounded-xl border p-6 text-left transition
+              ${
+                active.id === service.id
+                  ? "border-white/40 bg-white/15"
+                  : "border-white/10 bg-white/5 hover:bg-white/10"
+              }`}
+          >
+            <h3 className="mb-2 text-lg font-semibold text-white">
+              {service.title}
+            </h3>
+            <p className="text-sm text-white/70 line-clamp-3">
+              {service.description}
+            </p>
+          </button>
+        ))}
+      </div>
 
-        {/* Customer cards */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {CUSTOMERS.map((customer) => {
-            const isOpen = openId === customer.id;
-            return (
-              <div
-                key={customer.id}
-                className={`rounded-xl border transition-all duration-300 ${
-                  active.id === customer.id
-                    ? "border-white/40 bg-white/15"
-                    : "border-white/10 bg-white/5"
-                }`}
-              >
-                {/* Card header */}
-                <button
-                  onClick={() => {
-                    setActive(customer);
-                    setOpenId(isOpen ? null : customer.id);
-                  }}
-                  className="group w-full p-6 text-left transition hover:bg-white/5"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="mb-4 flex items-center gap-4">
-                        <div className="relative h-12 w-12">
-                          <Image
-                            src={customer.logo}
-                            alt={customer.name}
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                        <h4 className="text-lg font-semibold text-white">
-                          {customer.name}
-                        </h4>
-                      </div>
+      {/* Detail panel */}
+      <div className="rounded-xl border border-white/15 bg-white/10 p-8 backdrop-blur">
+        <h3 className="mb-3 text-2xl font-semibold text-white">
+          {active.title}
+        </h3>
 
-                      <p className="text-sm text-white/70 line-clamp-2">
-                        {customer.description}
-                      </p>
-                    </div>
-                    {/* Mobile expand indicator */}
-                    <span className="ml-4 text-white/50 lg:hidden">
-                      {isOpen ? "−" : "+"}
-                    </span>
-                  </div>
-                </button>
+        <p className="mb-6 text-white/80">{active.description}</p>
 
-                {/* Mobile dropdown detail */}
-                <div
-                  className={`lg:hidden overflow-hidden transition-all duration-300 ${
-                    isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-                  }`}
-                >
-                  <div className="border-t border-white/10 bg-white/10 p-5">
-                    <p className="mb-4 text-sm text-white/80">
-                      {customer.description}
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      {customer.engines.map((engine) => (
-                        <div
-                          key={engine.name}
-                          className="rounded-lg border border-white/15 bg-white/5 p-3"
-                        >
-                          <div className="relative h-20 w-full">
-                            <Image
-                              src={engine.image}
-                              alt={engine.name}
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
-                          <p className="mt-2 text-center text-xs font-semibold text-white">
-                            {engine.name}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Detail panel - Desktop only */}
-        <div className="hidden lg:block rounded-xl border border-white/15 bg-white/10 p-8 backdrop-blur">
-          <h3 className="mb-3 text-2xl font-semibold text-white">
-            {active.name}
-          </h3>
-
-          <p className="mb-6 text-white/80">
-            {active.description}
-          </p>
-
-          <div className="grid grid-cols-2 gap-6">
-            {active.engines.map((engine) => (
-              <div
-                key={engine.name}
-                className="rounded-lg border border-white/15 bg-white/5 p-4"
-              >
-                <div className="relative h-24 w-full">
-                  <Image
-                    src={engine.image}
-                    alt={engine.name}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <p className="mt-3 text-center text-sm font-semibold text-white">
-                  {engine.name}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
+        <ul className="space-y-2 text-sm text-white/75">
+          {active.highlights.map((item) => (
+            <li key={item} className="flex gap-2">
+              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-white/70" />
+              {item}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

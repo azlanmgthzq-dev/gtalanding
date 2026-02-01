@@ -1,13 +1,18 @@
-import Capabilities from "./components/sections/ServicesTabs/Capabilities";
 import Hero from "./components/sections/Hero";
 import ServicesTabs from "./components/sections/ServicesTabs";
+import TeamsTabs from "./components/sections/TeamsTabs";
 
 export default function Home() {
   return (
     <main className="relative">
       {/* HERO */}
       <Hero />
+
+      {/* CAPABILITIES & SERVICES */}
       <ServicesTabs />
+
+      {/* OUR TEAMS – BOARD (PROPOSAL PHASE) */}
+      <TeamsTabs />
 
       {/* ============================== */}
       {/* STATS / READINESS STRIP (NEXT) */}
@@ -15,15 +20,6 @@ export default function Home() {
       {/* 
       <section id="stats">
         // coming next
-      </section>
-      */}
-
-      {/* ============================== */}
-      {/* SERVICES / CAPABILITIES */}
-      {/* ============================== */}
-      {/* 
-      <section id="services">
-        // MRO capabilities
       </section>
       */}
 
