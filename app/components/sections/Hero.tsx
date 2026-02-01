@@ -39,11 +39,18 @@ export default function Hero() {
       {/* Content */}
       <div
         className="
+<<<<<<< Updated upstream
           relative mx-auto flex min-h-screen max-w-[1100px] px-6
           items-end
           pb-24
           sm:pb-28
           lg:pb-32
+=======
+          relative mx-auto max-w-[1100px] px-6 md:pl-12
+          pt-32 pb-24
+          sm:pt-36
+          lg:pt-44
+>>>>>>> Stashed changes
         "
       >
         <div className="animate-hero-fade space-y-3 text-left">

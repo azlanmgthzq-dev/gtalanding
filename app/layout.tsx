@@ -33,7 +33,7 @@ export default function RootLayout({
         className={`${barlow.variable} ${spaceMono.variable} antialiased bg-navy-950 text-slate-50`}
       >
         <TopNav />
-        
+
         {children}
       </body>
     </html>
