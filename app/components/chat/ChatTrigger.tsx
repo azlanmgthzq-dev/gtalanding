@@ -189,9 +189,10 @@ const useFormContext = () => React.useContext(FormContext)
 
 export interface MorphPanelProps {
     onSubmit?: (value: string) => void;
+    onClick?: () => boolean; // Return true if handled (opens ChatBox directly)
 }
 
-export default function MorphPanel({ onSubmit }: MorphPanelProps) {
+export default function MorphPanel({ onSubmit, onClick }: MorphPanelProps) {
     const wrapperRef = React.useRef<HTMLDivElement>(null)
     const textareaRef = React.useRef<HTMLTextAreaElement | null>(null)
 
@@ -204,11 +205,15 @@ export default function MorphPanel({ onSubmit }: MorphPanelProps) {
     }, [])
 
     const triggerOpen = React.useCallback(() => {
+        // If onClick returns true, parent handled it (e.g., opened ChatBox directly)
+        if (onClick && onClick()) {
+            return;
+        }
         setShowForm(true)
         setTimeout(() => {
             textareaRef.current?.focus()
         })
-    }, [])
+    }, [onClick])
 
     const handleSuccess = React.useCallback(() => {
         if (onSubmit && textareaRef.current) {

@@ -4,6 +4,14 @@ import { streamText } from 'ai';
 import { supabase } from '@/lib/supabase';
 import { getJinaEmbedding } from '@/lib/jina';
 import { generateSystemPrompt } from '@/lib/prompt';
+import {
+    sanitizeInput,
+    detectPromptInjection,
+    checkRateLimit,
+    isValidSessionId,
+    validateChatRequest,
+} from '@/lib/security';
+import { headers } from 'next/headers';
 
 // =============================================================================
 // PROVIDER CONFIGURATION - Change this to switch between providers
@@ -61,6 +69,15 @@ interface ChatMessage {
 }
 
 /**
+ * Get client IP for rate limiting
+ */
+function getClientIP(headersList: Headers): string {
+    return headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        headersList.get('x-real-ip') ||
+        'unknown';
+}
+
+/**
  * Save a message to chat history
  */
 async function saveToHistory(sessionId: string, role: 'user' | 'assistant', content: string) {
@@ -82,20 +99,20 @@ async function saveToHistory(sessionId: string, role: 'user' | 'assistant', cont
 }
 
 /**
- * Fetch chat history for a session
+ * Load chat history for a session
  */
 async function getChatHistory(sessionId: string): Promise<ChatMessage[]> {
     if (!HISTORY_CONFIG.enabled) return [];
 
     const { data, error } = await supabase
         .from('chat_history')
-        .select('role, content, created_at')
+        .select('role, content')
         .eq('session_id', sessionId)
         .order('created_at', { ascending: false })
         .limit(HISTORY_CONFIG.maxMessages);
 
     if (error) {
-        console.error('[Chat History] Failed to fetch history:', error);
+        console.error('[Chat History] Failed to load history:', error);
         return [];
     }
 
@@ -120,16 +137,75 @@ export async function POST(req: Request) {
     console.log('[Chat API] Model:', activeModel);
 
     try {
-        const { messages, sessionId } = await req.json();
-        console.log('[Chat API] Received', messages.length, 'messages');
+        // =================================================================
+        // SECURITY: Rate Limiting
+        // =================================================================
+        const headersList = await headers();
+        const clientIP = getClientIP(headersList);
+        const rateLimitResult = checkRateLimit(clientIP);
+
+        if (!rateLimitResult.allowed) {
+            console.warn('[Security] Rate limit exceeded for IP:', clientIP);
+            return new Response(
+                JSON.stringify({
+                    error: 'Too many requests. Please try again later.',
+                    retryAfter: rateLimitResult.retryAfter
+                }),
+                {
+                    status: 429,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Retry-After': String(rateLimitResult.retryAfter || 60)
+                    }
+                }
+            );
+        }
+
+        // =================================================================
+        // SECURITY: Request Validation
+        // =================================================================
+        const body = await req.json();
+        const validation = validateChatRequest(body);
+
+        if (!validation.valid) {
+            console.warn('[Security] Invalid request:', validation.error);
+            return new Response(
+                JSON.stringify({ error: validation.error }),
+                { status: 400, headers: { 'Content-Type': 'application/json' } }
+            );
+        }
+
+        const { sessionId } = body;
+        const messages = validation.sanitizedMessages!;
+
+        console.log('[Chat API] Received', messages.length, 'messages (sanitized)');
         console.log('[Chat API] Session ID:', sessionId || 'none (history disabled)');
 
-        const lastMessage = messages[messages.length - 1];
+        // =================================================================
+        // SECURITY: Session Validation
+        // =================================================================
+        if (sessionId && !isValidSessionId(sessionId)) {
+            console.warn('[Security] Invalid session ID format:', sessionId);
+            return new Response(
+                JSON.stringify({ error: 'Invalid session ID' }),
+                { status: 400, headers: { 'Content-Type': 'application/json' } }
+            );
+        }
 
-        // 1. Extract user query
-        const userQuery = typeof lastMessage.content === 'string'
-            ? lastMessage.content
-            : lastMessage.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
+        const lastMessage = messages[messages.length - 1];
+        const userQuery = sanitizeInput(lastMessage.content);
+
+        // =================================================================
+        // SECURITY: Prompt Injection Detection
+        // =================================================================
+        const injectionCheck = detectPromptInjection(userQuery);
+        if (!injectionCheck.safe) {
+            console.warn('[Security] Prompt injection blocked');
+            return new Response(
+                JSON.stringify({ error: injectionCheck.reason }),
+                { status: 400, headers: { 'Content-Type': 'application/json' } }
+            );
+        }
 
         console.log('[Chat API] User query:', userQuery?.substring(0, 100));
 
@@ -171,14 +247,9 @@ export async function POST(req: Request) {
         console.log('[Chat API] System prompt length:', systemPrompt.length);
 
         // 6. Combine history + current messages
-        // Priority: history messages first, then current request messages
         const currentMessages = messages.map((m: any) => ({
             role: m.role,
-            content: typeof m.content === 'string'
-                ? m.content
-                : Array.isArray(m.parts)
-                    ? m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n')
-                    : String(m.content || '')
+            content: sanitizeInput(typeof m.content === 'string' ? m.content : String(m.content || ''))
         }));
 
         // Merge: history (excluding current) + current messages
@@ -239,8 +310,16 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
         const sessionId = searchParams.get('sessionId');
 
+        // SECURITY: Validate session ID format
         if (!sessionId) {
             return new Response(JSON.stringify({ error: 'sessionId is required' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        if (!isValidSessionId(sessionId)) {
+            return new Response(JSON.stringify({ error: 'Invalid session ID format' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
             });

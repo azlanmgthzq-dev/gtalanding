@@ -1,11 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Send, Bot, User, X, Loader2, History } from "lucide-react";
-import { useEffect, useRef, useState, FormEvent, useCallback } from "react";
+import { Send, User, X, Loader2, History, AlertCircle } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState, FormEvent, useCallback, memo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
+
+// =============================================================================
+// SECURITY CONSTANTS
+// =============================================================================
+const MAX_INPUT_LENGTH = 2000;
+const MIN_INPUT_LENGTH = 1;
+
+/**
+ * Client-side input sanitization
+ */
+function sanitizeClientInput(input: string): string {
+    return input
+        .trim()
+        .replace(/\0/g, '')
+        .replace(/\n{3,}/g, '\n\n')
+        .replace(/ {3,}/g, '  ');
+}
 
 // =============================================================================
 // TYPES
@@ -145,13 +163,26 @@ export default function ChatBox({ onClose, initialQuery = "", sessionId: propSes
     // STREAMING CHAT - Real streaming from API with session persistence
     // =========================================================================
     const sendMessage = useCallback(async (messageText: string) => {
-        if (!messageText.trim() || isLoading) return;
+        // Client-side validation
+        const sanitized = sanitizeClientInput(messageText);
+
+        if (sanitized.length < MIN_INPUT_LENGTH) return;
+        if (isLoading) return;
+
+        if (sanitized.length > MAX_INPUT_LENGTH) {
+            setMessages(prev => [...prev, {
+                id: `error-${Date.now()}`,
+                role: "assistant",
+                content: `Message too long. Please keep your message under ${MAX_INPUT_LENGTH} characters.`,
+            }]);
+            return;
+        }
 
         // 1. Add user message immediately
         const userMessage: Message = {
             id: `user-${Date.now()}`,
             role: "user",
-            content: messageText,
+            content: sanitized,
         };
         setMessages(prev => [...prev, userMessage]);
         setInput("");
@@ -175,8 +206,24 @@ export default function ChatBox({ onClose, initialQuery = "", sessionId: propSes
                 }),
             });
 
+            // Handle security/rate limit errors
             if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                let errorMessage = "Sorry, I encountered an error. Please try again.";
+
+                if (response.status === 429) {
+                    errorMessage = `Too many requests. Please wait ${errorData.retryAfter || 60} seconds before trying again.`;
+                } else if (response.status === 400) {
+                    errorMessage = errorData.error || "Your message could not be processed. Please try rephrasing.";
+                }
+
+                setMessages(prev =>
+                    prev.map(m => m.id === assistantId
+                        ? { ...m, content: errorMessage }
+                        : m
+                    )
+                );
+                return;
             }
 
             // 4. Stream the response using ReadableStream
@@ -192,7 +239,10 @@ export default function ChatBox({ onClose, initialQuery = "", sessionId: propSes
                     streamedContent += decoder.decode(value, { stream: true });
 
                     setMessages(prev =>
-                        prev.map(m => m.id === assistantId ? { ...m, content: streamedContent } : m)
+                        prev.map(m => m.id === assistantId
+                            ? { ...m, content: streamedContent }
+                            : m
+                        )
                     );
                 }
             }
@@ -261,16 +311,8 @@ export default function ChatBox({ onClose, initialQuery = "", sessionId: propSes
                 ) : (
                     <>
                         {messages.map((msg) => (
-                            <MessageBubble key={msg.id} message={msg} />
+                            <MessageBubble key={msg.id} message={msg} isTyping={isLoading && msg.content === ""} />
                         ))}
-
-                        {/* Loading indicator when streaming but no content yet */}
-                        {isLoading && messages[messages.length - 1]?.content === "" && (
-                            <div className="flex items-center gap-2 text-blue-400/60 text-sm pl-12">
-                                <Loader2 size={14} className="animate-spin" />
-                                <span>Generating response...</span>
-                            </div>
-                        )}
                     </>
                 )}
             </div>
@@ -303,8 +345,14 @@ function ChatHeader({
     return (
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-transparent shrink-0">
             <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-blue-600/20 text-blue-400 border border-blue-500/30">
-                    <Bot size={20} />
+                <div className="p-1 rounded-full bg-white/10 border border-white/20">
+                    <Image
+                        src="/Logo/GTA_LOGO_3cropped.png"
+                        alt="GTA"
+                        width={38}
+                        height={38}
+                        className="rounded-full"
+                    />
                 </div>
                 <div>
                     <h3 className="font-semibold text-white tracking-wide">GTA AI Assistant</h3>
@@ -336,7 +384,7 @@ function ChatHeader({
     );
 }
 
-function MessageBubble({ message }: { message: Message }) {
+function MessageBubble({ message, isTyping = false }: { message: Message; isTyping?: boolean }) {
     const isUser = message.role === "user";
 
     return (
@@ -348,12 +396,22 @@ function MessageBubble({ message }: { message: Message }) {
         >
             {/* Avatar */}
             <div
-                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border ${isUser
+                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border overflow-hidden ${isUser
                     ? "bg-white/10 border-white/20 text-white"
-                    : "bg-blue-600/20 border-blue-500/30 text-blue-400"
+                    : "bg-white/10 border-white/20"
                     }`}
             >
-                {isUser ? <User size={16} /> : <Bot size={16} />}
+                {isUser ? (
+                    <User size={16} />
+                ) : (
+                    <Image
+                        src="/Logo/GTA_LOGO_3cropped.png"
+                        alt="GTA"
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                    />
+                )}
             </div>
 
             {/* Message content */}
@@ -365,7 +423,15 @@ function MessageBubble({ message }: { message: Message }) {
             >
                 {isUser ? (
                     message.content
+                ) : isTyping && !message.content ? (
+                    /* Animated typing dots */
+                    <div className="flex items-center gap-1 py-1">
+                        <span className="w-2 h-2 bg-blue-400/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 bg-blue-400/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 bg-blue-400/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
                 ) : (
+                    /* Markdown rendering */
                     <div className="chat-markdown prose prose-invert prose-sm max-w-none prose-p:my-3 prose-p:leading-relaxed prose-ul:my-3 prose-ol:my-3 prose-li:my-1 prose-headings:my-4 prose-headings:font-semibold prose-h2:text-base prose-headings:text-white prose-strong:text-blue-300 prose-a:text-blue-400 prose-a:underline prose-a:underline-offset-2 hover:prose-a:text-blue-300 prose-code:text-blue-300 prose-code:bg-slate-700/50 prose-code:px-1 prose-code:rounded [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
                         <ReactMarkdown
                             remarkPlugins={[remarkBreaks, remarkGfm]}
