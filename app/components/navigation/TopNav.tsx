@@ -29,8 +29,8 @@ export default function TopNav() {
         boxShadow: "0 4px 24px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05) inset",
       }}
     >
-      <div className="mx-auto max-w-[1280px] px-6">
-        <div className="flex items-center justify-between h-[72px]">
+      <div className="w-full px-6">
+        <div className="relative flex items-center justify-between h-[72px]">
           {/* LOGO */}
           <Link href="/" className="flex items-center gap-3">
             <Image
@@ -45,7 +45,7 @@ export default function TopNav() {
           </Link>
 
           {/* NAV LINKS */}
-          <nav className="hidden lg:flex items-center gap-6">
+          <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}

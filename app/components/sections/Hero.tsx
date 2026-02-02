@@ -49,7 +49,7 @@ export default function Hero() {
         <div className="animate-hero-fade space-y-3 text-left">
           {/* Sub headline */}
           <p className="text-sm uppercase tracking-[0.35em] text-white/70 sm:text-base">
-            Global Turbine Asia  
+            Global Turbine Asia
           </p>
 
           {/* Main headline */}
