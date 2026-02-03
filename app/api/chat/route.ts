@@ -117,10 +117,12 @@ async function getChatHistory(sessionId: string): Promise<ChatMessage[]> {
     }
 
     // Reverse to get chronological order (oldest first)
-    const messages = (data || []).reverse().map(m => ({
-        role: m.role as 'user' | 'assistant',
-        content: m.content,
-    }));
+    const messages = (data || []).reverse().map(
+        (m: { role: 'user' | 'assistant'; content: string }) => ({
+          role: m.role,
+          content: m.content,
+        })
+      );
 
     console.log('[Chat History] Loaded', messages.length, 'messages from history');
     return messages;
