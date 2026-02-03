@@ -16,6 +16,7 @@ export default function ServicesTabs() {
 
   return (
     <section
+        id="services"
         className="relative overflow-hidden py-24"
         style={{
           backgroundImage: `

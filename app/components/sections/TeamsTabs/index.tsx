@@ -12,6 +12,7 @@ export default function TeamsTabs() {
 
   return (
     <section
+      id="leadership"
       className="relative overflow-hidden py-24"
       style={{
         backgroundImage: `

@@ -1,12 +1,14 @@
 import Hero from "./components/sections/Hero";
 import ServicesTabs from "./components/sections/ServicesTabs";
 import TeamsTabs from "./components/sections/TeamsTabs";
+import FloatingChat from "./components/chat/FloatingChat";
 
 export default function Home() {
   return (
     <main className="relative">
       {/* HERO */}
       <Hero />
+      <FloatingChat />
 
       {/* CAPABILITIES & SERVICES */}
       <ServicesTabs />

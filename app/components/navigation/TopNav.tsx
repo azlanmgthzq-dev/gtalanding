@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { NAV_LINKS } from "@/app/lib/constants";
+import { NAV_LINKS } from "@/lib/constants";
 
 export default function TopNav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -32,7 +32,7 @@ export default function TopNav() {
       <div className="mx-auto max-w-[1280px] px-6">
         <div className="flex items-center justify-between h-[72px]">
           {/* LOGO */}
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="#hero" className="flex items-center gap-3">
             <Image
               src="/Logo/OFLogo3.png"
               alt="Global Turbine Asia"
