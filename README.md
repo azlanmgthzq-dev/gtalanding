@@ -1,36 +1,106 @@
+# GTA Landing
+
+Landing site and AI assistant for **Global Turbine Asia Sdn Bhd (GTA)** — aerospace MRO services.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+---
 
-First, run the development server:
+## Tech Stack
+
+| Layer        | Technology |
+|-------------|------------|
+| **Framework** | [Next.js 16](https://nextjs.org) (App Router) |
+| **UI**        | [React 19](https://react.dev), [TypeScript](https://www.typescriptlang.org) |
+| **Styling**   | [Tailwind CSS 4](https://tailwindcss.com), [@tailwindcss/typography](https://tailwindcss.com/docs/typography-plugin) |
+| **Backend / DB** | [Supabase](https://supabase.com) (Postgres, RPC for RAG, chat history) |
+| **Animations** | [Framer Motion](https://www.framer.com/motion) |
+| **UI primitives** | [Radix UI](https://www.radix-ui.com) (Slot), [Lucide React](https://lucide.dev) |
+| **Markdown**  | [react-markdown](https://github.com/remarkjs/react-markdown), [remark-gfm](https://github.com/remarkjs/remark-gfm), [remark-breaks](https://github.com/remarkjs/remark-breaks) |
+| **Utilities** | [clsx](https://github.com/lukeed/clsx), [tailwind-merge](https://github.com/dcastil/tailwind-merge) |
+
+---
+
+## AI Stack
+
+The in-app **GTA Assist** chat is powered by the [Vercel AI SDK](https://sdk.vercel.ai) with configurable providers and RAG.
+
+### LLM providers (configurable)
+
+One provider is active at a time; see `app/api/chat/route.ts` → `PROVIDER_CONFIG.active`.
+
+| Provider   | SDK / client | Default model | Env var |
+|-----------|--------------|----------------|---------|
+| **Google Gemini** | `@ai-sdk/google` | `gemini-2.0-flash` | `GOOGLE_GENERATIVE_AI_API_KEY` |
+| **OpenRouter**    | `@ai-sdk/openai` (base URL `https://openrouter.ai/api/v1`) | `z-ai/glm-4.5-air:free` | `OPENROUTER_API_KEY` |
+
+- **Streaming:** `streamText()` from the `ai` package.
+- **System prompt:** “GTA Assist” — professional guide for GTA aerospace MRO (SBH®, AOG, GSP®, Training). Defined in `app/lib/prompt.ts`.
+
+### Embeddings & RAG
+
+| Service    | Use | Model / config |
+|------------|-----|----------------|
+| **Jina AI** | Query and document embeddings for RAG | [Jina Embeddings API](https://jina.ai/embeddings/) — `jina-embeddings-v4`, 1024 dimensions |
+
+- User messages are embedded with Jina; Supabase RPC `match_documents` runs semantic search over stored document embeddings.
+- Retrieved context is passed into the LLM for grounded, company-specific answers.
+
+### Summary
+
+- **LLM:** Vercel AI SDK → Gemini **or** OpenRouter (one active).
+- **Embeddings:** Jina AI (`jina-embeddings-v4`, 1024d).
+- **RAG:** Supabase Postgres + `match_documents` RPC.
+- **Chat history:** Stored in Supabase; configurable in `app/api/chat/route.ts` (`HISTORY_CONFIG`).
+
+---
+
+## Environment variables
+
+Create a `.env.local` (or set in your host) with:
+
+```bash
+# Supabase (required for DB, RAG, chat history)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# LLM — use the one that matches PROVIDER_CONFIG.active in app/api/chat/route.ts
+GOOGLE_GENERATIVE_AI_API_KEY=...   # when using provider "gemini"
+OPENROUTER_API_KEY=...             # when using provider "openrouter"
+
+# Embeddings (required for RAG)
+JINA_API_KEY=...
+```
+
+---
+
+## Getting started
+
+1. Install dependencies:
+
+```bash
+npm install
+# or: yarn | pnpm | bun
+```
+
+2. Add the environment variables above to `.env.local`.
+
+3. Run the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# or: yarn dev | pnpm dev | bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Edit the landing page in `app/page.tsx`; the chat API lives under `app/api/chat/`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Learn more
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Vercel AI SDK](https://sdk.vercel.ai)
+- [Supabase Docs](https://supabase.com/docs)
+- [Deploy on Vercel](https://nextjs.org/docs/app/building-your-application/deploying)

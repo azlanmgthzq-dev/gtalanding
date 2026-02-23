@@ -94,7 +94,7 @@ export default function ChatBox({ onClose, initialQuery = "", sessionId: propSes
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [sessionId, setSessionId] = useState<string>("");
-    const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+    const [isLoadingHistory, setIsLoadingHistory] = useState(true);
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const hasAutoSent = useRef(false);
@@ -112,43 +112,43 @@ export default function ChatBox({ onClose, initialQuery = "", sessionId: propSes
     // =========================================================================
     // LOAD CHAT HISTORY
     // =========================================================================
-    // useEffect(() => {
-    //     if (!sessionId || hasLoadedHistory.current) return;
+    useEffect(() => {
+        if (!sessionId || hasLoadedHistory.current) return;
 
-    //     async function loadHistory() {
-    //         try {
-    //             console.log("[ChatBox] Loading history for session:", sessionId);
-    //             const response = await fetch(`/api/chat?sessionId=${sessionId}`);
+        async function loadHistory() {
+            try {
+                console.log("[ChatBox] Loading history for session:", sessionId);
+                const response = await fetch(`/api/chat?sessionId=${sessionId}`);
 
-    //             if (!response.ok) {
-    //                 console.log("[ChatBox] No history found or error");
-    //                 setIsLoadingHistory(false);
-    //                 return;
-    //             }
+                if (!response.ok) {
+                    console.log("[ChatBox] No history found or error");
+                    setIsLoadingHistory(false);
+                    return;
+                }
 
-    //             const data = await response.json();
+                const data = await response.json();
 
-    //             if (data.messages && data.messages.length > 0) {
-    //                 const historyMessages: Message[] = data.messages.map((m: any, index: number) => ({
-    //                     id: m.id || `history-${index}`,
-    //                     role: m.role as "user" | "assistant",
-    //                     content: m.content,
-    //                 }));
+                if (data.messages && data.messages.length > 0) {
+                    const historyMessages: Message[] = data.messages.map((m: any, index: number) => ({
+                        id: m.id || `history-${index}`,
+                        role: m.role as "user" | "assistant",
+                        content: m.content,
+                    }));
 
-    //                 // Prepend welcome message, then history
-    //                 setMessages([WELCOME_MESSAGE, ...historyMessages]);
-    //                 console.log("[ChatBox] Loaded", historyMessages.length, "messages from history");
-    //             }
-    //         } catch (error) {
-    //             console.error("[ChatBox] Failed to load history:", error);
-    //         } finally {
-    //             setIsLoadingHistory(false);
-    //             hasLoadedHistory.current = true;
-    //         }
-    //     }
+                    // Prepend welcome message, then history
+                    setMessages([WELCOME_MESSAGE, ...historyMessages]);
+                    console.log("[ChatBox] Loaded", historyMessages.length, "messages from history");
+                }
+            } catch (error) {
+                console.error("[ChatBox] Failed to load history:", error);
+            } finally {
+                setIsLoadingHistory(false);
+                hasLoadedHistory.current = true;
+            }
+        }
 
-    //     loadHistory();
-    // }, [sessionId]);
+        loadHistory();
+    }, [sessionId]);
 
     // =========================================================================
     // AUTO-SCROLL
