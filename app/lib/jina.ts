@@ -7,7 +7,7 @@ export async function getJinaEmbedding(text: string): Promise<number[]> {
     const requestBody = {
         model: 'jina-embeddings-v4', // Supports variable dimensions
         input: [text],
-        dimensions: 1024, // Reduced to 1024 due to API error
+        dimensions: 768, // Reduced to 1024 due to API error
     };
 
     console.log('Sending Jina payload:', JSON.stringify(requestBody));
